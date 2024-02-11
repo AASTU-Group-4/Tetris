@@ -57,11 +57,9 @@ const shapes =[
     
     let peiceObj = null;
  
-    //set interval
     
     setInterval(newGame,500);
 
-    //  start the game
 
     function newGame(){
         checkFill();
@@ -71,8 +69,6 @@ const shapes =[
         }
         moveDown();
     }
-
-    //random shape
 
     function randomShape(){
         let ran = Math.floor((Math.random()*7));
@@ -84,8 +80,6 @@ const shapes =[
 
     
     }
-
-       // rendering the peice
 
     function renderPeice(){
         let peice=peiceObj.peice;
@@ -102,8 +96,6 @@ const shapes =[
 
     }
 
-
-    // to check weather the boxes hit the border of canvas
     
     function area(x,y,reverse){
             let peice=peiceObj.peice || reverse;
@@ -126,7 +118,6 @@ const shapes =[
         }
         
     
-    //move the boxes
     
     function moveDown(){
         if(!area(peiceObj.x,peiceObj.y+1)){
@@ -154,7 +145,6 @@ const shapes =[
 
     }
 
-       // push to the left
 
     function moveLeft(){
         if(!area(peiceObj.x-1,peiceObj.y))
@@ -162,15 +152,12 @@ const shapes =[
     renderGrid();   
     }
         
-     // push to the right
 
     function moveRight(){
         if(!area(peiceObj.x+1,peiceObj.y))
         peiceObj.x+=1;
         renderGrid();
     }
-
-    // rotate the shape
 
     function moveUp(){
         let reverse=[];
@@ -194,33 +181,60 @@ const shapes =[
         renderGrid();
     }
     
-    
-    // make a grid
     function genetratGrid(){
-      
-
-
+        let grid=[];
+        for(let i=0;i<row;i++){
+            grid.push([]);
+            for(let j=0;j<col;j++){
+              grid[i].push(0);
+            }
+        }
+        return grid;
     }
-
-    // render the grid
-
     function renderGrid(){
-       
-        
+        for(let i=0;i<grid.length;i++){
+            for(let j=0;j<grid[i].length;j++){
+                ctx.fillStyle=color[grid[i][j]];
+                ctx.fillRect(j,i,1,1);
+            }
+        }
+        renderPeice();
     }
 
-    // to remove the filled row;
 
     function checkFill() {
-        
-    
-    }
-    
-      //Adding event listener
-
-    document.addEventListener("keydown",function(e){
+        for (let i = row - 1; i >= 0; i--) {
+          let allFill = grid[i].every((cell) => cell > 0);
       
-
-     
+          if (allFill) {
+            grid.splice(i, 1);
+            grid.unshift(Array.from({ length: col }, () => 0));
+            score++;
+      
+            if (score >= 2 && score < 4) {
+              scBoared.innerHTML = "Score: " + score;
+              LevelBoared.innerHTML = "Level: 2";
+              setTimeout(newGame, 300); 
+            } else if (score >= 4) {
+              scBoared.innerHTML = "Score: " + score;
+              LevelBoared.innerHTML = "Level: 3";
+              setTimeout(newGame, 100); 
+            } else {
+              scBoared.innerHTML = "Score: " + score;
+            }
+          }
+        }
+      }
+    document.addEventListener("keydown",function(e){
+       let key=e.code;
+        if(key=="ArrowDown"){
+            moveDown();
+        }else if(key=="ArrowLeft"){
+            moveLeft();
+        }else if (key== "ArrowRight"){
+            moveRight();
+        }else if(key== "ArrowUp"){
+            moveUp();
+        }
     })
     
